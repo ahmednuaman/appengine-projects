@@ -1,0 +1,37 @@
+application: appengine-projects # change this please!
+version: local
+runtime: python27
+api_version: 1
+threadsafe: yes
+
+handlers:
+- url: /assets # this states that all files under http://appengine-url/assets will exist in a folder static/assets; this is helpful for CSS, JS and images
+  static_dir: static/assets/
+
+- url: .* # this is our main app
+  script: main.app
+
+libraries:
+- name: django # this is the standard django framework
+  version: latest
+  
+- name: jinja2 # this is the templating framework
+  version: latest
+
+- name: webapp2 # this is appengine's framework
+  version: "2.5.1"
+
+skip_files: # these are the files we're not uploading to appengine
+- ^(.*/)?app\.yaml
+- ^(.*/)?app\.yml
+- ^(.*/)?index\.yaml
+- ^(.*/)?index\.yml
+- ^(.*/)?#.*#
+- ^(.*/)?.*~
+- ^(.*/)?.*\.py[co]
+- ^(.*/)?.*/RCS/.*
+- ^(.*/)?\..*
+- ^.git*
+- ^.*\.coffee
+- ^.*\.less
+- ^.*\.csv$
