@@ -1,0 +1,38 @@
+<!doctype html>
+<html>
+<head>
+    <!-- load some css -->
+    <link rel="stylesheet" type="text/css" href="assets/css/bootstrap.min.css">
+    <title>Comments app</title>
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            {% if comments %}
+                <h2>Comments</h2>
+                {% for comment in comments %}
+                    <div class="row">
+                        <div class="well">
+                            <h4>{{ comment.author }} said...</h4>
+                            <p>{{ comment.comment }}</p>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+        <div class="row">
+            <h2>Add a comment</h2>
+            <form class="well">
+                <label>Your name <input type="text" name="author" placeholder="Your name" /></label>
+                <label>
+                    Your comment <br />
+                    <textarea name></textarea>
+                </label>
+            </form>
+        </div>
+    </div>
+    <!-- load some js -->
+    <script type="text/javascript" src="assets/js/jquery.min.js"></script>
+    <script type="text/javascript" src="assets/js/bootstrap.min.js"></script>
+</body>
+</html>
