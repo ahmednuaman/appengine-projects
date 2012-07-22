@@ -5,7 +5,7 @@ from google.appengine.ext import db
 class CommentModel(db.Model):
     author = db.StringProperty()
     comment = db.TextProperty()
-    submitted = db.DateTimeProperty(auto_add_now=True)
+    submitted = db.DateTimeProperty(auto_now_add=True)
 
 def get_comments():
     # return all the comments from our database
@@ -15,7 +15,7 @@ def get_comments():
     query = CommentModel.all()
 
     # loop through the query and append the comments to our list
-    for comment in comments:
+    for comment in query:
         comments.append({
             'author': comment.author,
             'comment': comment.comment
@@ -28,9 +28,9 @@ def add_comment(author, comment):
     # simply add the comment to our database
     entry = CommentModel()
 
-    # assign the values
+    # assign the values
     entry.author = author
     entry.comment = comment
 
     # save its ass
-    return entry.put()
+    return bool(entry.put())

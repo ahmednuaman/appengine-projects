@@ -8,31 +8,129 @@
 <body>
     <div class="container">
         <div class="row">
-            {% if comments %}
-                <h2>Comments</h2>
-                {% for comment in comments %}
-                    <div class="row">
-                        <div class="well">
-                            <h4>{{ comment.author }} said...</h4>
-                            <p>{{ comment.comment }}</p>
+            <h2>Comments</h2>
+            <div id="comments" class="row">
+                {% if comments %}
+                    {% for comment in comments %}
+                        <div class="row">
+                            <div class="well">
+                                <h4>{{ comment.author }} said...</h4>
+                                <p>{{ comment.comment }}</p>
+                            </div>
                         </div>
-                    </div>
-                {% endfor %}
-            {% endif %}
+                    {% endfor %}
+                {% endif %}
+            </div>
         </div>
         <div class="row">
             <h2>Add a comment</h2>
-            <form class="well">
-                <label>Your name <input type="text" name="author" placeholder="Your name" /></label>
-                <label>
-                    Your comment <br />
-                    <textarea name></textarea>
-                </label>
+            <form id="comments-form" class="form-horizontal">
+                <div id="alert-loading" class="alert alert-info">
+                    Sending data, please wait...
+                    <a class="close" data-dismiss="alert" href="#">&times;</a>
+                </div>
+                <div id="alert-error" class="alert alert-error">
+                    Woops, there's been a problem, try again!
+                    <a class="close" data-dismiss="alert" href="#">&times;</a>
+                </div>
+                <div id="alert-success" class="alert alert-success">
+                    Yay, submission went well!
+                    <a class="close" data-dismiss="alert" href="#">&times;</a>
+                </div>
+                <fieldset>
+                    <div class="control-group">
+                        <label class="control-label" for="input">Your name</label>
+                        <div class="controls">
+                            <input type="text" name="author" id="input" placeholder="Your name" />
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label" for="textarea">Your comment</label>
+                        <div class="controls">
+                            <textarea name="comment" id="textarea" placeholder="Your comment"></textarea>
+                        </div>
+                    </div>
+                </fieldset>
+                <div class="form-actions">
+                    <input type="submit" class="btn btn-primary" value="Add comment" />
+                </div>
             </form>
         </div>
     </div>
     <!-- load some js -->
     <script type="text/javascript" src="assets/js/jquery.min.js"></script>
     <script type="text/javascript" src="assets/js/bootstrap.min.js"></script>
+    <script type="text/javascript">
+    <!--
+        // here I'm wrapping my code in a closure tab, this means it's automatically run
+        (function()
+        {
+            function ready()
+            {
+                // add a listener to our form so that when someone submits a comment we submit it via ajax and load it back
+                // we're using jquery's submit handler, this means that when the form is submitted we'll do something
+                $('#comments-form').submit(function(event)
+                {
+                    // we don't want to actually refresh the page so we stop the event
+                    // this is because when you submit the form it'll refresh the page
+                    event.preventDefault();
+
+                    // let's show the loader
+                    $('.alert').hide().filter('#alert-loading').show();
+
+                    // now let's submit the data with jquery's post ajax function
+                    $.post('/comment', $(this).serialize(), handleSubmissionComplete, 'json'); // you can find out about these args on jquery $.post docs
+                });
+
+                // add a listener to the alert's close buttons and hide the alerts for now
+                $('.alert').alert().hide();
+            }
+
+            function handleSubmissionComplete(data)
+            {
+                // show the appropriate loader
+                $('.alert').hide().filter('#alert-' + (data ? 'succes' : 'error')).show();
+
+                // check the response
+                if (data)
+                {
+                    // so the submission was a success, let's reload the data
+                    $.get('/comment', {}, handleLoadComplete, 'json');
+                }
+            }
+
+            function handleLoadComplete(data)
+            {
+                // check that we have data
+                if (data)
+                {
+                    // loop through our comments and update our list
+                    $('#comments').empty();
+
+                    // create a var for our comment
+                    var comment;
+
+                    for (var i = 0; i < data.length; i++)
+                    {
+                        comment = data[i];
+
+                        // add a row for each comment
+                        $('#comments').append(' \
+                            <div class="row"> \
+                                <div class="well"> \
+                                    <h4>' + comment.author + ' said...</h4> \
+                                    <p>' + comment.comment + '</p> \
+                                </div> \
+                            </div> \
+                        ');
+                    }
+                }
+            }
+
+            // use jquery's ready function to tell our code when the document is ready
+            $(document).ready(ready);
+        })();
+    -->
+    </script>
 </body>
 </html>

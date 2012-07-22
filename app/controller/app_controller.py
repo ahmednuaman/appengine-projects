@@ -5,7 +5,7 @@ import webapp2
 
 from app.model import comment_model
 
-class AdminController(webapp2.RequestHandler):
+class AppController(webapp2.RequestHandler):
     def get(self):
         # get our template
         template = get_template({
